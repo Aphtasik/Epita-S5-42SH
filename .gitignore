@@ -1,0 +1,8 @@
+# subject files
+*.swap
+*.o
+*.a
+*.so
+*.class
+*.log
+*.core
