@@ -11,6 +11,7 @@ enum token_type
     TOKEN_FI,
     TOKEN_SEMICOL,
     TOKEN_BACKN,
+    TOKEN_PIPE,
     TOKEN_SQUOTE,
     TOKEN_WORD,
     TOKEN_EOF,

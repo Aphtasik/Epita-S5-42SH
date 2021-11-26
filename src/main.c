@@ -17,7 +17,7 @@
 
 int main(void)
 {
-    const char *test = "if tamere; then\n pute;";
+    const char *test = "if tamere | then\n pute;";
     struct lexer *l = lexer_new(test);
     struct token *t;
     enum token_type type = TOKEN_IF;

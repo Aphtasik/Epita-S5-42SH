@@ -14,6 +14,7 @@ static struct token token_pairs[] =
     {TOKEN_ELSE, "else"},
     {TOKEN_FI, "fi"},
     {TOKEN_SEMICOL, ";"},
+    {TOKEN_PIPE, "|"},
     {TOKEN_BACKN, "\n"},
     {TOKEN_EOF, "\0"},
     {TOKEN_UNKNOWN, NULL},
