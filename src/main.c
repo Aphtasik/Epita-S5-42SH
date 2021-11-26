@@ -4,7 +4,7 @@
 
 int main(void)
 {
-    const char *test = "if tamere then pute";
+    const char *test = "if tamere; then pute";
     struct lexer *l = lexer_new(test);
     struct token *t;
 

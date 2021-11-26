@@ -53,6 +53,8 @@ size_t get_len_next_token(const char *input)
     size_t len = 0;
     while (!is_delimitor(input[len]))
         len++;
+    if (len == 0 && (input[len] == ';' || input[len] == '\n'))
+        len++;
     return len;
 }
 
@@ -99,14 +101,17 @@ struct token *lexer_peek(struct lexer *lexer)
     return new;
 }
 
-
 // incr pos and return token
 struct token *lexer_pop(struct lexer *lexer)
 {
+
+    if (lexer->input[lexer->pos] == '\n' || lexer->input[lexer->pos] == ';')
+        lexer->pos++;
+
     while(!is_delimitor(lexer->input[lexer->pos]))
         lexer->pos++;
 
-    if (lexer->input[lexer->pos] != '\0')
+    if (lexer->input[lexer->pos] != '\0' && lexer->input[lexer->pos] != ';' && lexer->input[lexer->pos] != '\n')
         lexer->pos++;
 
     struct token *t = lexer->current_tok;
