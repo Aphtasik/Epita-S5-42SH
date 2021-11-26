@@ -13,20 +13,20 @@ cflags = ['-D_GNU_SOURCE', '-D_POSIX_C_SOURCE=200809L']
 add_project_arguments(cflags, language: 'c')
 
 incdirs = [
-  include_directories('src/utils'),
-  include_directories('src/lexer'),
+  include_directories('utils'),
+  include_directories('lexer'),
 ]
 
 common = [
-  'src/lexer/lexer.c',
-  'src/lexer/token.c',
+  'lexer/lexer.c',
+  'lexer/token.c',
 ]
 
 token_printer = executable(
     # name of the output executable
     'token_printer',
     # source files for the executable
-    common + [ 'src/main.c' ],
+    common + [ 'main.c' ],
     # these are passed as -I
     include_directories: incdirs
 )

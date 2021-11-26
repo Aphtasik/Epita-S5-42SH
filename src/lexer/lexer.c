@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <string.h>
 
+// Struct that allows us to avoid a huge switch
 static struct token token_pairs[] = 
 {
     {TOKEN_IF, "if"},
@@ -41,9 +42,7 @@ void lexer_free(struct lexer *lexer)
 
 int is_delimitor(char c)
 {
-    if (c == '\0' || c == ' ' || c == '\t')
-        return 2;
-    else if (c == '\n' || c == ';')
+    if (c == '\0' || c == ' ' || c == '\t' || c == '\n' || c == ';')
         return 1;
     return 0;
 }
@@ -53,6 +52,8 @@ size_t get_len_next_token(const char *input)
     size_t len = 0;
     while (!is_delimitor(input[len]))
         len++;
+
+    // If we are on a ; or \n, we need return 1
     if (len == 0 && (input[len] == ';' || input[len] == '\n'))
         len++;
     return len;
@@ -68,7 +69,10 @@ struct token *fill_token(const char *input)
     for (int i = 0; token_pairs[i].value; i++)
     {
         if (!strcmp(str_token, token_pairs[i].value))
+        {
+            free(str_token);
             return token_new(token_pairs[i].type);
+        }
     }
 
     // Quote case
@@ -85,6 +89,7 @@ struct token *fill_token(const char *input)
     // Word case
     struct token *t = token_new(TOKEN_WORD);
     t->value = str_token;
+    free(str_token);
     return t;
 }
 
@@ -104,7 +109,7 @@ struct token *lexer_peek(struct lexer *lexer)
 // incr pos and return token
 struct token *lexer_pop(struct lexer *lexer)
 {
-
+    // If we are on a \n or ;, we need to do +1 in order to let the while skip the spaces
     if (lexer->input[lexer->pos] == '\n' || lexer->input[lexer->pos] == ';')
         lexer->pos++;
 
