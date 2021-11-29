@@ -34,10 +34,16 @@ struct lexer *lexer_new(char *input)
 
 void lexer_free(struct lexer *lexer)
 {
-    if (lexer->current_tok)
-        token_free(lexer->current_tok);
+    if (lexer)
+    {
+        if (lexer->current_tok)
+            token_free(lexer->current_tok);
 
-    free(lexer);
+        if (lexer->input)
+            free(lexer->input);
+
+        free(lexer);
+    }
 }
 
 struct my_string
@@ -162,7 +168,7 @@ char *lexer_fill_current_tok(struct lexer *lexer)
         is_special = get_special_token_end(str, &end_separator);
         if (is_special && mystr->len == 0)
         {
-            t = lexer_tokenize(mystr->str);
+            t = lexer_tokenize(lexer_make_string(str, end_separator));
             if (!t)
             {
                 // We have a space, nothing or \t
@@ -195,11 +201,21 @@ char *lexer_fill_current_tok(struct lexer *lexer)
         }
     }
 
-    // If we are here, it's an EOF
-    t = token_new(TOKEN_EOF);
-    lexer->current_tok = t;
-    my_string_free(mystr);
-    return NULL;
+    if (mystr->len == 0)
+    {
+        // If we are here, it's an EOF
+        t = token_new(TOKEN_EOF);
+        lexer->current_tok = t;
+        my_string_free(mystr);
+        return NULL;
+    }
+    else
+    {
+        t = lexer_tokenize(mystr->str);
+        my_string_free(mystr);
+        lexer->current_tok = t;
+        return str;
+    }
 }
 
 // return curr token
@@ -214,13 +230,22 @@ struct token *lexer_peek(struct lexer *lexer)
 // incr pos and return token
 struct token *lexer_pop(struct lexer *lexer)
 {
+    if (lexer->current_tok)
+        token_free(lexer->current_tok);
+
     char *next_pos = lexer_fill_current_tok(lexer);
     lexer->input = next_pos;
 
     struct token *t = token_new(lexer->current_tok->type);
-    t->value = lexer->current_tok->value;
 
-    free(lexer->current_tok);
+    if (lexer->current_tok->value)
+    {
+        t->value = calloc(strlen(lexer->current_tok->value) + 1, sizeof(char));
+        strcpy(t->value, lexer->current_tok->value);
+    }
+
+    if (lexer->current_tok)
+        token_free(lexer->current_tok);
     lexer->current_tok = NULL;
     return t;
 }

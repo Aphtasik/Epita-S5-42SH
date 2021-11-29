@@ -1,6 +1,7 @@
 #include "lexer.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
     /** 0 TOKEN_IF, */
     /** 1 TOKEN_THEN, */
@@ -9,15 +10,16 @@
     /** 4 TOKEN_FI, */
     /** 5 TOKEN_SEMICOL, */
     /** 6 TOKEN_BACKN, */
-    /** 7 TOKEN_SQUOTE, */
-    /** 8 TOKEN_WORD, */
-    /** 9 TOKEN_EOF, */
-    /** 10 TOKEN_ERROR, */
-    /** 11 TOKEN_UNKNOWN */
+    /** 7 TOKEN_PIPE, */
+    /** 8 TOKEN_SQUOTE, */
+    /** 9 TOKEN_WORD, */
+    /** 10 TOKEN_EOF, */
+    /** 11 TOKEN_ERROR, */
+    /** 12 TOKEN_UNKNOWN */
 
 int main(void)
 {
-    const char *test = "if tamere | then\n pute;";
+    char *test = "if true; then false";
     struct lexer *l = lexer_new(test);
     struct token *t;
     enum token_type type = TOKEN_IF;

@@ -15,5 +15,11 @@ struct token *token_new(enum token_type type)
 
 void token_free(struct token *token)
 {
-    free(token);
+    if (token)
+    {
+        if (token->value)
+            free(token->value);
+
+        free(token);
+    }
 }
