@@ -8,11 +8,18 @@
 struct token *token_new(enum token_type type)
 {
     struct token *new = zalloc(sizeof(struct token));
-    new->type = type;
+     new->type = type;
+     new->value = NULL;
     return new;
 }
 
 void token_free(struct token *token)
 {
-    free(token);
+    if (token)
+    {
+        if (token->value)
+            free(token->value);
+
+        free(token);
+    }
 }

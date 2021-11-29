@@ -19,15 +19,14 @@
 
 struct lexer
 {
-    const char *input; ///< The input data
-    size_t pos; ///< The current offset inside the input data
+    char *input; ///< The input data
     struct token *current_tok; ///< The next token, if processed
 };
 
 /**
  * \brief Creates a new lexer given an input string.
  */
-struct lexer *lexer_new(const char *input);
+struct lexer *lexer_new(char *input);
 
 /**
  ** \brief Free the given lexer, but not its input.
