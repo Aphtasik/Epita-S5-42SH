@@ -168,18 +168,20 @@ char *lexer_fill_current_tok(struct lexer *lexer)
         is_special = get_special_token_end(str, &end_separator);
         if (is_special && mystr->len == 0)
         {
-            t = lexer_tokenize(lexer_make_string(str, end_separator));
+            char *diff = lexer_make_string(str, end_separator);
+            t = lexer_tokenize(diff);
+            free(diff);
             if (!t)
             {
                 // We have a space, nothing or \t
                 // just skip it until we have something interesting
+                token_free(t);
                 str++;
                 continue;
             }
             else
             {
                 // Copy from str to end_separator
-                t = lexer_tokenize(lexer_make_string(str, end_separator));
                 my_string_free(mystr);
                 lexer->current_tok = t;
                 return end_separator;
