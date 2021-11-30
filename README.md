@@ -10,6 +10,9 @@ $$$$$$$$ | $$$$$$  |$$  _____|$$  __$$\
       \__|\________|\_______/ \__|  \__|
 -->
 
+42sh Project
+=============
+
 <table><tr>
 <td>
 “Forty-two! Is that all you’ve got to show for seven and a half million years work?”
@@ -19,7 +22,8 @@ I think the problem, to be quite honest with you,
 is that you’ve never actually known what the question is.”
 --Douglas Adams
 </td>
-</table></tr>
+</tr>
+</table>
 
 AUTHORS
 --------------
