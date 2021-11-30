@@ -3,25 +3,18 @@
 #include "alloc.h"
 
 // Struct that allows us to avoid a huge switch
-static struct token token_pairs[] = 
-{
-    {TOKEN_IF, "if"},
-    {TOKEN_THEN, "then"},
-    {TOKEN_ELIF, "elif"},
-    {TOKEN_ELSE, "else"},
-    {TOKEN_FI, "fi"},
-    {TOKEN_SEMICOL, ";"},
-    {TOKEN_PIPE, "|"},
-    {TOKEN_BACKN, "\n"},
-    {TOKEN_EOF, "\0"},
-    {TOKEN_UNKNOWN, NULL},
+static struct token token_pairs[] = {
+    { TOKEN_IF, "if" },      { TOKEN_THEN, "then" }, { TOKEN_ELIF, "elif" },
+    { TOKEN_ELSE, "else" },  { TOKEN_FI, "fi" },     { TOKEN_SEMICOL, ";" },
+    { TOKEN_PIPE, "|" },     { TOKEN_BACKN, "\n" },  { TOKEN_EOF, "\0" },
+    { TOKEN_UNKNOWN, NULL },
 };
 
 struct token *token_new(enum token_type type)
 {
     struct token *new = zalloc(sizeof(struct token));
-     new->type = type;
-     new->value = NULL;
+    new->type = type;
+    new->value = NULL;
     return new;
 }
 
