@@ -19,7 +19,7 @@
 
 int main(void)
 {
-    char *test = "if true; then\techo 'hello' >> file";
+    char *test = "if while for do done";
     struct lexer *l = lexer_new(test);
     struct token *t;
     enum token_type type = TOKEN_IF;
