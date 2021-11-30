@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 enum token_type
@@ -12,7 +14,6 @@ enum token_type
     TOKEN_SEMICOL,
     TOKEN_BACKN,
     TOKEN_PIPE,
-    TOKEN_SQUOTE,
     TOKEN_WORD,
     TOKEN_EOF,
     TOKEN_ERROR,
@@ -22,7 +23,7 @@ enum token_type
 struct token
 {
     enum token_type type; ///< The kind of token
-    char* value; ///< If the token is a number, its value
+    char *value; ///< If the token is a number, its value
 };
 
 /**
@@ -34,3 +35,6 @@ struct token *token_new(enum token_type type);
  * \brief Frees a token
  */
 void token_free(struct token *token);
+
+// Get the token type corresponding to a given string
+enum token_type token_get_type(char *token_str);

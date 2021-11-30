@@ -58,7 +58,7 @@ int echo_it(char **args, size_t len)
         n = 1;
         i++;
     }
-    if (len == 1 && ( e || n ))
+    if (len == 1 && (e || n))
     {
         if (!n)
             printf("%c", '\n');
@@ -67,7 +67,7 @@ int echo_it(char **args, size_t len)
     while (i < len)
     {
         print_it(args[i], e);
-        i++;   
+        i++;
     }
     if (!n)
         printf("%c", '\n');

@@ -40,14 +40,14 @@ struct ast *init_ast(enum ast_type t)
 {
     switch (t)
     {
-        case AST_ROOT:
-            return (struct ast *)init_ast_root();
-        case AST_IF:
-            return (struct ast *)init_ast_if();
-        case AST_CMD:
-            return (struct ast *)init_ast_cmd();
-        default:
-            return NULL;
+    case AST_ROOT:
+        return (struct ast *)init_ast_root();
+    case AST_IF:
+        return (struct ast *)init_ast_if();
+    case AST_CMD:
+        return (struct ast *)init_ast_cmd();
+    default:
+        return NULL;
     }
 }
 // ##### FREE FUNCTIONS
@@ -75,7 +75,7 @@ void ast_free(struct ast *ast)
         for (size_t i = 0; i < a_if->nb_body; i++)
             ast_free(a_if->body[i]);
         free(a_if->body);
-        
+
         ast_free(a_if->on_false);
     }
     else

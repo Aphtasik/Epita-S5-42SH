@@ -18,7 +18,11 @@ incdirs = [
 ]
 
 common = [
-  'lexer/lexer.c',
+  'lexer/lexer_basics.c',
+  'lexer/lexer_fill_current_tok.c',
+  'lexer/lexer_peek_pop.c',
+  'lexer/lexer_special_token.c',
+  'lexer/my_string.c',
   'lexer/token.c',
 ]
 
@@ -26,7 +30,7 @@ token_printer = executable(
     # name of the output executable
     'token_printer',
     # source files for the executable
-    common + [ 'main.c' ],
+    common + [ 'lexer_main_test.c' ],
     # these are passed as -I
     include_directories: incdirs
 )
