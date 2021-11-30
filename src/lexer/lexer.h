@@ -40,7 +40,7 @@ struct lexer *lexer_new(char *input);
 void lexer_free(struct lexer *lexer);
 
 // stock the end of the special token in end
-int get_special_token_end(char *str, char **end);
+int get_special_token_end(char *str, char **end, enum token_type *type);
 
 // Fill the curr_tok of a given lexer, return the pos of the next tok
 char *lexer_fill_current_tok(struct lexer *lexer);
@@ -56,4 +56,4 @@ struct token *lexer_peek(struct lexer *lexer);
  * \brief Returns the next token, and removes it from the stream:
  *   calling lexer_pop in a loop will iterate over all tokens until EOF.
  */
-truct token *lexer_pop(struct lexer *lexer);
+struct token *lexer_pop(struct lexer *lexer);

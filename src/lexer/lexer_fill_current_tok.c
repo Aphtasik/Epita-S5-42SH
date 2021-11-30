@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-static struct token *lexer_tokenize(char *token_str)
+static struct token *lexer_tokenize(char *token_str, enum token_type type)
 {
     // We don't want to tokenize these useless things
     if (strlen(token_str) == 0 || *token_str == ' '
@@ -8,7 +8,8 @@ static struct token *lexer_tokenize(char *token_str)
         return NULL;
 
     // Allocate the token and fill his struct
-    enum token_type type = token_get_type(token_str);
+    if (type == 0)
+        type = token_get_type(token_str);
     struct token *t = token_new(type);
 
     t->value = malloc(sizeof(char) * (strlen(token_str) + 1));
@@ -45,7 +46,7 @@ static int lexer_last_token(struct lexer *lexer, struct my_string *mystr,
     }
     else
     {
-        t = lexer_tokenize(mystr->str);
+        t = lexer_tokenize(mystr->str, 0);
         my_string_free(mystr);
         lexer->current_tok = t;
         return 1;
@@ -60,14 +61,15 @@ char *lexer_fill_current_tok(struct lexer *lexer)
     struct my_string *mystr = my_string_init();
     char *end_separator = NULL;
     int is_special;
+    enum token_type type;
 
     while (*str != '\0')
     {
-        is_special = get_special_token_end(str, &end_separator);
+        is_special = get_special_token_end(str, &end_separator, &type);
         if (is_special && mystr->len == 0)
         {
             char *diff = lexer_make_string(str, end_separator);
-            t = lexer_tokenize(diff);
+            t = lexer_tokenize(diff, type);
             free(diff);
             if (!t)
             {
@@ -88,7 +90,7 @@ char *lexer_fill_current_tok(struct lexer *lexer)
         {
             // End of the curr token
             // Give this tok to lexer
-            t = lexer_tokenize(mystr->str);
+            t = lexer_tokenize(mystr->str, 0);
             my_string_free(mystr);
             lexer->current_tok = t;
             return str;

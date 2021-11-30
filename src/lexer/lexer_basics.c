@@ -4,7 +4,7 @@ struct lexer *lexer_new(char *input)
 {
     struct lexer *new = malloc(sizeof(struct lexer));
     if (!new)
-        errx(EXIT_FAILURE, "Lexer new error");
+        return NULL;
 
     new->input = input;
     new->current_tok = NULL;

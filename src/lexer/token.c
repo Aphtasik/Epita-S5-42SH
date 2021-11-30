@@ -1,13 +1,13 @@
 #include "token.h"
 
-#include "alloc.h"
-
 // Struct that allows us to avoid a huge switch
 static struct token token_pairs[] = {
-    { TOKEN_IF, "if" },      { TOKEN_THEN, "then" }, { TOKEN_ELIF, "elif" },
-    { TOKEN_ELSE, "else" },  { TOKEN_FI, "fi" },     { TOKEN_SEMICOL, ";" },
-    { TOKEN_PIPE, "|" },     { TOKEN_BACKN, "\n" },  { TOKEN_EOF, "\0" },
-    { TOKEN_UNKNOWN, NULL },
+    { TOKEN_IF, "if" },      { TOKEN_THEN, "then" },   { TOKEN_ELIF, "elif" },
+    { TOKEN_ELSE, "else" },  { TOKEN_FI, "fi" },       { TOKEN_SEMICOL, ";" },
+    { TOKEN_PIPE, "|" },     { TOKEN_BACKN, "\n" },    { TOKEN_EOF, "\0" },
+    { TOKEN_UNKNOWN, NULL }, { TOKEN_WHILE, "while" }, { TOKEN_DO, "do" },
+    { TOKEN_DONE, "done" },  { TOKEN_FOR, "for" },     { TOKEN_FOR, "for" },
+    { TOKEN_CASE, "case" },  { TOKEN_ESAC, "esac" },
 };
 
 struct token *token_new(enum token_type type)

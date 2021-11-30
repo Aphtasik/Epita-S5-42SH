@@ -1,18 +1,38 @@
 #pragma once
 
+#include "../utils//alloc.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+/** while
+ * do
+ * done
+ * for
+ * case
+ * esac*/
+
 enum token_type
 {
-    TOKEN_IF,
+    TOKEN_IF = 1,
     TOKEN_THEN,
     TOKEN_ELIF,
     TOKEN_ELSE,
+    TOKEN_WHILE,
+    TOKEN_DO,
+    TOKEN_DONE,
+    TOKEN_FOR,
+    TOKEN_CASE,
+    TOKEN_ESAC,
     TOKEN_FI,
     TOKEN_SEMICOL,
     TOKEN_BACKN,
+    TOKEN_REDIR,
+    TOKEN_ARITH,
+    TOKEN_VAR,
+    TOKEN_QT,
+    TOKEN_COMMENT,
     TOKEN_PIPE,
     TOKEN_WORD,
     TOKEN_EOF,
