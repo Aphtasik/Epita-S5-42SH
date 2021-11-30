@@ -1,5 +1,11 @@
 #pragma once
 
+#include <err.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "my_string.h"
 #include "token.h"
 
 /**
@@ -33,6 +39,12 @@ struct lexer *lexer_new(char *input);
  */
 void lexer_free(struct lexer *lexer);
 
+// stock the end of the special token in end
+int get_special_token_end(char *str, char **end);
+
+// Fill the curr_tok of a given lexer, return the pos of the next tok
+char *lexer_fill_current_tok(struct lexer *lexer);
+
 /**
  * \brief Returns the next token, but doesn't move forward: calling lexer_peek
  * multiple times in a row always returns the same result. This functions is
@@ -44,4 +56,4 @@ struct token *lexer_peek(struct lexer *lexer);
  * \brief Returns the next token, and removes it from the stream:
  *   calling lexer_pop in a loop will iterate over all tokens until EOF.
  */
-struct token *lexer_pop(struct lexer *lexer);
+truct token *lexer_pop(struct lexer *lexer);
