@@ -1,3 +1,3 @@
 all_sources += files(
-    'parser.c',
+    'ast.c',
 )

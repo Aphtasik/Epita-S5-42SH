@@ -53,10 +53,10 @@ struct ast *init_ast(enum ast_type t)
 }
 // ##### UTILITY FUNCTIONS
 
-void push_arr(struct ast** arr, size_t *len, struct ast *elt)
+void push_arr(struct ast ***arr, size_t *len, struct ast *elt)
 {
-    arr = realloc(arr, sizeof(struct ast*) * ((*len) + 1));
-    arr[(*len)++] = elt;
+    *arr = realloc(*arr, sizeof(struct ast *) * ((*len) + 1));
+    (*arr)[(*len)++] = elt;
 }
 
 // ##### FREE FUNCTIONS
@@ -100,7 +100,12 @@ void ast_free(struct ast *ast)
 int main(void)
 {
     struct ast_if *a_if = init_ast_if();
-    struct ast_cmd *a_cmd= init_ast_cmd();
-    push_arr(a_if->conditions, &a_if->nb_conditions, (struct ast*)a_cmd);
-    ast_free((struct ast*)a_if);
+    struct ast_cmd *a_cmd = init_ast_cmd();
+    push_arr(&a_if->conditions, &a_if->nb_conditions, (struct ast *)a_cmd);
+
+    struct ast_root *a_root = init_ast_root();
+    struct ast_cmd *a_cmd2 = init_ast_cmd();
+    push_arr(&a_root->children, &a_root->nb_children, (struct ast *)a_cmd2);
+    push_arr(&a_root->children, &a_root->nb_children, (struct ast *)a_if);
+    ast_free((struct ast *)a_root);
 }
