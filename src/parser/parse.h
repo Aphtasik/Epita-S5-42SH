@@ -12,7 +12,7 @@ enum parser_status
     PARSER_UNEXPECTED_TOKEN,
 };
 
-struct ast **parse_compound_list(struct lexer *lexer);
+enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res, size_t *len);
 enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res);
 
 #endif

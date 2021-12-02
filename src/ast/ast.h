@@ -42,8 +42,8 @@ struct ast_cmd
 {
     struct ast base;
 
-    char **commands;
-    size_t nb_commands;
+    char **args;
+    size_t nb_args;
 };
 
 struct ast_root *init_ast_root(void);
@@ -51,5 +51,6 @@ struct ast_if *init_ast_if(void);
 struct ast_cmd *init_ast_cmd(void);
 struct ast *init_ast(enum ast_type t);
 void ast_free(struct ast *ast);
+void push_arr(struct ast ***arr, size_t *len, struct ast *elt);
 
 #endif
