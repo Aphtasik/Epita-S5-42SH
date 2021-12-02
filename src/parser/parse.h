@@ -10,6 +10,8 @@ enum parser_status
 {
     PARSER_OK,
     PARSER_UNEXPECTED_TOKEN,
+    PARSER_NO_COMMAND,
+    PARSER_MISSING_TOKEN
 };
 
 enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res, size_t *len);
