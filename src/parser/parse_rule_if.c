@@ -2,13 +2,12 @@
 
 void skip_newline(struct lexer *lexer)
 {
-    struct token *tok = NULL;
     enum token_type type = (lexer_peek(lexer))->type;
     while (type == TOKEN_BACKN || type == TOKEN_SEMICOL)
         token_free(lexer_pop(lexer));
 }
 
-static enum parser_status handle_parse_error(enum parser_status status,
+enum parser_status handle_parse_error(enum parser_status status,
                                              struct ast **res)
 {
     warnx("unexpected token");
@@ -18,58 +17,78 @@ static enum parser_status handle_parse_error(enum parser_status status,
 }
 
 // fill the command struct node
-enum parser_status parse_cmd(struct lexer *lexer, struct ast_cmd *cmd)
+enum parser_status parse_fill_cmd(struct lexer *lexer, struct ast_cmd *cmd)
 {
     struct token *tok = lexer_peek(lexer);
-    while(tok->type == TOKEN_WORD)
+    while (tok->type == TOKEN_WORD)
     {
         cmd->args = realloc(cmd->args, sizeof(char *) * (cmd->nb_args + 1));
-        cmd->args[cmd->nb_args++] = tok->value;
+        cmd->args[cmd->nb_args++] = strdup(tok->value);
+        lexer_token_free(lexer);
+        tok = lexer_pop(lexer);
+
     }
+    lexer_token_free(lexer);
     return PARSER_OK;
+}
+
+enum parser_status parse_cmd(struct lexer *lexer, struct ast **res)
+{
+    struct token *tok = lexer_peek(lexer);
+
+    // Not interrested by this token
+    if (tok->type != TOKEN_WORD)
+        return PARSER_OK;
+
+    struct ast_cmd *a_cmd = init_ast_cmd();
+    enum parser_status p_stat = parse_fill_cmd(lexer, a_cmd);
+    *res = (struct ast *)a_cmd;
+    return p_stat;
 }
 
 // fill the pointer to array res with all commands node found
 // and discard useless tokens
-enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res, size_t *len)
+enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res,
+                                       size_t *len)
 {
     skip_newline(lexer);
     struct token *tok = lexer_peek(lexer);
     enum parser_status p_stat;
-    while(tok->type == TOKEN_WORD || tok->type == TOKEN_BACKN
-            || tok->type == TOKEN_SEMICOL)
+    while (tok->type == TOKEN_WORD || tok->type == TOKEN_BACKN
+           || tok->type == TOKEN_SEMICOL)
     {
         skip_newline(lexer);
         struct ast_cmd *cmd = init_ast_cmd();
-        p_stat = parse_cmd(lexer, cmd);
-        push_arr(res, len, (struct ast*)cmd);
-        if(p_stat != PARSER_OK)
+        p_stat = parse_fill_cmd(lexer, cmd);
+        push_arr(res, len, (struct ast *)cmd);
+        if (p_stat != PARSER_OK)
         {
-            p_stat = handle_parse_error(p_stat, res);
+            p_stat = handle_parse_error(p_stat, *res);
             return p_stat;
         }
     }
+    return PARSER_OK;
 }
 
 // fill the 'else node' of the ast_if node
 enum parser_status parse_else_clause(struct lexer *lexer, struct ast_if *a_if)
 {
     struct token *tok = lexer_peek(lexer);
-    if(  tok->type != TOKEN_ELSE
-            || tok->type != TOKEN_ELIF)
+    if (tok->type != TOKEN_ELSE || tok->type != TOKEN_ELIF)
         return PARSER_OK;
 
     enum parser_status p_stat;
-    if(tok->type == TOKEN_ELSE)
+    if (tok->type == TOKEN_ELSE)
     {
         token_free(lexer_pop(lexer));
-        p_stat = parse_compound_list(lexer, &(a_if->on_false),
-                &(a_if->nb_on_false));
+        p_stat =
+            parse_compound_list(lexer, &(a_if->on_false), &(a_if->nb_on_false));
         if (p_stat != PARSER_OK)
             return p_stat;
         return PARSER_OK;
     }
-    //TODO: handle elif statement 
+    // TODO: handle elif statement
+    return PARSER_OK;
 }
 
 enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
@@ -83,14 +102,14 @@ enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
     token_free(lexer_pop(lexer));
 
     // Parse conditions
-    p_stat = parse_compound_list(lexer, &a_if->conditions,
-            &a_if->nb_conditions);
-    if(p_stat != PARSER_OK)
+    p_stat =
+        parse_compound_list(lexer, &a_if->conditions, &a_if->nb_conditions);
+    if (p_stat != PARSER_OK)
         return handle_parse_error(p_stat, res);
 
     // Check if "then"
     tok = lexer_pop(lexer);
-    if (tok->type != TOKEN_THEN) 
+    if (tok->type != TOKEN_THEN)
     {
         token_free(tok);
         return handle_parse_error(PARSER_UNEXPECTED_TOKEN, res);
@@ -99,24 +118,23 @@ enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
 
     // Parse on_true
     p_stat = parse_compound_list(lexer, &a_if->on_true, &a_if->nb_on_true);
-    if(p_stat != PARSER_OK)
+    if (p_stat != PARSER_OK)
         return handle_parse_error(p_stat, res);
 
     // Parse Else clause
     p_stat = parse_else_clause(lexer, a_if);
-    if(p_stat != PARSER_OK)
+    if (p_stat != PARSER_OK)
         return handle_parse_error(p_stat, res);
 
     // Check if "fi"
     tok = lexer_pop(lexer);
-    if (tok->type != TOKEN_FI) 
+    if (tok->type != TOKEN_FI)
     {
         token_free(tok);
         return handle_parse_error(PARSER_UNEXPECTED_TOKEN, res);
     }
     token_free(tok);
 
-    // FOutre a_if ds res TODO;
     return PARSER_OK;
 }
 

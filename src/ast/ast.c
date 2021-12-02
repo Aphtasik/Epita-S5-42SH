@@ -31,8 +31,8 @@ struct ast_if *init_ast_if(void)
 struct ast_cmd *init_ast_cmd(void)
 {
     struct ast_cmd *new = malloc(sizeof(struct ast_cmd));
-    new->commands = NULL;
-    new->nb_commands = 0;
+    new->args = NULL;
+    new->nb_args = 0;
     new->base.type = AST_CMD;
     return new;
 }
@@ -90,22 +90,9 @@ void ast_free(struct ast *ast)
     else
     {
         struct ast_cmd *a_cmd = (struct ast_cmd *)ast;
-        for (size_t i = 0; i < a_cmd->nb_commands; i++)
-            free(a_cmd->commands[i]);
-        free(a_cmd->commands);
+        for (size_t i = 0; i < a_cmd->nb_args; i++)
+            free(a_cmd->args[i]);
+        free(a_cmd->args);
     }
     free(ast);
-}
-
-int main(void)
-{
-    struct ast_if *a_if = init_ast_if();
-    struct ast_cmd *a_cmd = init_ast_cmd();
-    push_arr(&a_if->conditions, &a_if->nb_conditions, (struct ast *)a_cmd);
-
-    struct ast_root *a_root = init_ast_root();
-    struct ast_cmd *a_cmd2 = init_ast_cmd();
-    push_arr(&a_root->children, &a_root->nb_children, (struct ast *)a_cmd2);
-    push_arr(&a_root->children, &a_root->nb_children, (struct ast *)a_if);
-    ast_free((struct ast *)a_root);
 }

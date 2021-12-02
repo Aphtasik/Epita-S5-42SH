@@ -37,6 +37,8 @@ struct lexer *lexer_new(char *input);
 /**
  ** \brief Free the given lexer, but not its input.
  */
+void lexer_token_free(struct lexer *lexer);
+
 void lexer_free(struct lexer *lexer);
 
 // stock the end of the special token in end
