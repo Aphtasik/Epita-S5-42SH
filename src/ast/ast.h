@@ -19,8 +19,9 @@ struct ast
 struct ast_root
 {
     struct ast base;
-    size_t nb_children;
+
     struct ast **children;
+    size_t nb_children;
 };
 
 struct ast_if
@@ -30,15 +31,17 @@ struct ast_if
     struct ast **conditions;
     size_t nb_conditions;
 
-    struct ast **body;
-    size_t nb_body;
+    struct ast **on_true;
+    size_t nb_on_true;
 
-    struct ast *on_false;
+    struct ast **on_false;
+    size_t nb_on_false;
 };
 
 struct ast_cmd
 {
     struct ast base;
+
     char **commands;
     size_t nb_commands;
 };

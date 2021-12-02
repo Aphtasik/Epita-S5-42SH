@@ -1,5 +1,11 @@
 #pragma once
 
+#include <err.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "my_string.h"
 #include "token.h"
 
 /**
@@ -19,20 +25,25 @@
 
 struct lexer
 {
-    const char *input; ///< The input data
-    size_t pos; ///< The current offset inside the input data
+    char *input; ///< The input data
     struct token *current_tok; ///< The next token, if processed
 };
 
 /**
  * \brief Creates a new lexer given an input string.
  */
-struct lexer *lexer_new(const char *input);
+struct lexer *lexer_new(char *input);
 
 /**
  ** \brief Free the given lexer, but not its input.
  */
 void lexer_free(struct lexer *lexer);
+
+// stock the end of the special token in end
+int get_special_token_end(char *str, char **end, enum token_type *type);
+
+// Fill the curr_tok of a given lexer, return the pos of the next tok
+char *lexer_fill_current_tok(struct lexer *lexer);
 
 /**
  * \brief Returns the next token, but doesn't move forward: calling lexer_peek
