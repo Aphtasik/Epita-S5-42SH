@@ -32,7 +32,11 @@ int main(void)
         type = t->type;
         token_free(t);
     }
+    t = lexer_pop(l);
+    type = t->type;
+    token_free(t);
 
+    l->input = NULL;
     lexer_free(l);
 
     return 0;

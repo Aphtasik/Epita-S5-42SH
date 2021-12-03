@@ -13,7 +13,18 @@ struct token *lexer_peek(struct lexer *lexer)
 struct token *lexer_pop(struct lexer *lexer)
 {
     if (lexer->current_tok)
+    {
         token_free(lexer->current_tok);
+        lexer->current_tok = NULL;
+    }
+        
+
+    // if it's the end of string, only return 
+    if (!lexer->input || *(lexer->input) == '\0')
+    {
+        struct token *t = token_new(TOKEN_EOF);
+        return t;
+    }
 
     char *next_pos = lexer_fill_current_tok(lexer);
     lexer->input = next_pos;

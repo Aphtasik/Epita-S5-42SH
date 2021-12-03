@@ -12,18 +12,6 @@ struct lexer *lexer_new(char *input)
     return new;
 }
 
-void lexer_token_free(struct lexer *lexer)
-{
-    if (lexer)
-    {
-        if (lexer->current_tok)
-        {
-            token_free(lexer->current_tok);
-            lexer->current_tok = NULL;
-        }
-    }
-}
-
 void lexer_free(struct lexer *lexer)
 {
     if (lexer)
