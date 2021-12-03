@@ -17,7 +17,6 @@ struct token *lexer_pop(struct lexer *lexer)
         token_free(lexer->current_tok);
         lexer->current_tok = NULL;
     }
-        
 
     // if it's the end of string, only return 
     if (!lexer->input || *(lexer->input) == '\0')

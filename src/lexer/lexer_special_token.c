@@ -48,7 +48,12 @@ static char *lexer_get_separator(char *str, enum token_type *type)
         || *str == ';' || *str == ' ' || *str == '\t' || *str == '<'
         || *str == '>')
     {
-        *type = TOKEN_REDIR;
+        if (*str == ';')
+            *type = TOKEN_SEMICOL;
+        else
+            *type = TOKEN_REDIR;
+
+        //TODO: Handle this shit trash nigga ass bitch
         return (str + 1);
     }
 

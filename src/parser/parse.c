@@ -42,7 +42,7 @@ struct ast *parse(struct lexer *lexer)
 
 int main(void)
 {
-    char *test = strdup("");
+    char *test = strdup("if true; then false; fi");
 
     struct lexer *lexer = lexer_new(test);
     struct ast *ast = parse(lexer);
