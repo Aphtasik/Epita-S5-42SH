@@ -19,9 +19,6 @@ void lexer_free(struct lexer *lexer)
         if (lexer->current_tok)
             token_free(lexer->current_tok);
 
-        if (lexer->input)
-            free(lexer->input);
-
         free(lexer);
         lexer = NULL;
     }

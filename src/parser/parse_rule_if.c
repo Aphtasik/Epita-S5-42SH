@@ -14,8 +14,10 @@ enum parser_status handle_parse_error(enum parser_status status,
 {
     if(status == PARSER_UNEXPECTED_TOKEN)
         warnx("unexpected token");
-    if(status == PARSER_NO_COMMAND)
+    else if(status == PARSER_NO_COMMAND)
         warnx("no command found");
+    else if(status == PARSER_MISSING_TOKEN)
+        warnx("missing token");
     ast_free(*res);
     *res = NULL;
     return status;
@@ -56,10 +58,11 @@ enum parser_status parse_cmd(struct lexer *lexer, struct ast **res)
 
     //fill cmd node
     struct ast_cmd *a_cmd = init_ast_cmd();
-    enum parser_status p_stat = parse_fill_cmd(lexer, a_cmd);
-
     // place cmd node as child of his parent
     *res = (struct ast *)a_cmd;
+
+    enum parser_status p_stat = parse_fill_cmd(lexer, a_cmd);
+
     return p_stat;
 }
 
@@ -70,6 +73,9 @@ enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res,
 {
     skip_newline(lexer);
     struct token *tok = lexer_peek(lexer);
+    if (tok->type == TOKEN_EOF)
+        return PARSER_MISSING_TOKEN;
+
     enum parser_status p_stat;
     while (tok->type == TOKEN_WORD || tok->type == TOKEN_BACKN
            || tok->type == TOKEN_SEMICOL)
@@ -77,12 +83,13 @@ enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res,
         skip_newline(lexer);
         // fill the command node, error if no command
         struct ast_cmd *cmd = init_ast_cmd();
-        p_stat = parse_fill_cmd(lexer, cmd);
-        push_arr(res, len, (struct ast *)cmd);
 
+        p_stat = parse_fill_cmd(lexer, cmd);
         // no need to call handle_error cuz handled in parse_rule_if
         if (p_stat != PARSER_OK)
             return p_stat;
+
+        push_arr(res, len, (struct ast *)cmd);
     }
     return PARSER_OK;
 }
@@ -120,6 +127,10 @@ enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
 
     // init if node
     struct ast_if *a_if = init_ast_if();
+    
+    // place if node as child of his parent
+    *res = (struct ast*) a_if;
+
     enum parser_status p_stat;
     // discard if token
     token_free(lexer_pop(lexer));
@@ -128,7 +139,7 @@ enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
     p_stat =
         parse_compound_list(lexer, &a_if->conditions, &a_if->nb_conditions);
     if (p_stat != PARSER_OK)
-        return handle_parse_error(p_stat, res);
+        return p_stat;
     
 
     // Check if "then"
@@ -136,30 +147,28 @@ enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
     if (tok->type != TOKEN_THEN)
     {
         token_free(tok);
-        return handle_parse_error(PARSER_UNEXPECTED_TOKEN, res);
+        return p_stat;
     }
     token_free(tok);
 
     // Parse on_true
     p_stat = parse_compound_list(lexer, &a_if->on_true, &a_if->nb_on_true);
     if (p_stat != PARSER_OK)
-        return handle_parse_error(p_stat, res);
+        return p_stat;
 
     // Parse Else clause
     p_stat = parse_else_clause(lexer, a_if);
     if (p_stat != PARSER_OK)
-        return handle_parse_error(p_stat, res);
+        return p_stat;
 
     // Check if "fi"
     tok = lexer_pop(lexer);
     if (tok->type != TOKEN_FI)
     {
         token_free(tok);
-        return handle_parse_error(PARSER_MISSING_TOKEN, res);
+        return p_stat;
     }
     token_free(tok);
-    // place if node as child of his parent
-    *res = (struct ast*) a_if;
     return PARSER_OK;
 }
 

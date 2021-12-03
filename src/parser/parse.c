@@ -1,13 +1,13 @@
 #include "parse.h"
 
-enum parser_status parse_all(struct lexer *lexer, struct ast *res)
+enum parser_status parse_all(struct lexer *lexer, struct ast **res)
 {
     enum parser_status p_stat;
     // parse if rule, must return ok if not interrested
-    if ((p_stat = parse_rule_if(lexer, &res)) != PARSER_OK)
+    if ((p_stat = parse_rule_if(lexer, res)) != PARSER_OK)
         return p_stat;
     // parse every word found
-    if ((p_stat = parse_cmd(lexer, &res)) != PARSER_OK)
+    if ((p_stat = parse_cmd(lexer, res)) != PARSER_OK)
         return p_stat;
 
     return PARSER_OK;
@@ -27,7 +27,8 @@ struct ast *parse(struct lexer *lexer)
 
         // pass the new children address to the general parse function
         enum parser_status p_stat =
-            parse_all(lexer, a_root->children[a_root->nb_children++]);
+            parse_all(lexer, &a_root->children[a_root->nb_children++]);
+        token_free(lexer_pop(lexer));
         // handling error
         if (p_stat != PARSER_OK)
         {
@@ -36,20 +37,18 @@ struct ast *parse(struct lexer *lexer)
             return NULL;
         }
     }
-    // free the last token
-    lexer_token_free(lexer);
     return (struct ast *)a_root;
 }
 
 int main(void)
 {
-    char *test = malloc(sizeof(char) * 2);
-    test[0] = 'i';
-    test[1] = '\0';
+    char *test = strdup("");
+
     struct lexer *lexer = lexer_new(test);
     struct ast *ast = parse(lexer);
     ast_free(ast);
     lexer_free(lexer);
+    free(test);
     return 0;
 }
 
