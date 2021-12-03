@@ -44,21 +44,35 @@ static char *lexer_get_separator(char *str, enum token_type *type)
         return (str + 2);
     }
 
-    if (*str == '(' || *str == ')' || *str == '{' || *str == '}' || *str == '\n'
-        || *str == ';' || *str == ' ' || *str == '\t' || *str == '<'
-        || *str == '>')
+    if (*str == '\n' || *str == ';' || *str == ' ' || *str == '\t'
+        || *str == '<' || *str == '>')
     {
-        if (*str == ';')
+        char c = *str;
+        switch (c)
+        {
+        case ';':
             *type = TOKEN_SEMICOL;
-        else if (*str == '\n')
+            break;
+            ;
+        case '\n':
             *type = TOKEN_BACKN;
-        else
+            break;
+            ;
+        case '<':
             *type = TOKEN_REDIR;
-
-        // TODO: Handle this shit trash nigga ass bitch
+            break;
+            ;
+        case '>':
+            *type = TOKEN_REDIR;
+            break;
+            ;
+        default:
+            *type = TOKEN_WORD;
+            break;
+            ;
+        }
         return (str + 1);
     }
-
     *type = 0;
     return str;
 }
