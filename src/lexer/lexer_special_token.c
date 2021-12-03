@@ -50,10 +50,12 @@ static char *lexer_get_separator(char *str, enum token_type *type)
     {
         if (*str == ';')
             *type = TOKEN_SEMICOL;
+        else if (*str == '\n')
+            *type = TOKEN_BACKN;
         else
             *type = TOKEN_REDIR;
 
-        //TODO: Handle this shit trash nigga ass bitch
+        // TODO: Handle this shit trash nigga ass bitch
         return (str + 1);
     }
 
@@ -167,11 +169,11 @@ static char *lexer_variables(char *str, enum token_type *type)
 int get_special_token_end(char *str, char **end, enum token_type *type)
 {
     int res = 0;
-    res =
-        ((*end = lexer_get_separator(str, type)) != str
-         || (*end = lexer_quotes(str, type)) != str || (*end = lexer_mafs(str, type)) != str
-         || (*end = lexer_comment(str, type)) != str
-         || (*end = lexer_variables(str, type)) != str);
+    res = ((*end = lexer_get_separator(str, type)) != str
+           || (*end = lexer_quotes(str, type)) != str
+           || (*end = lexer_mafs(str, type)) != str
+           || (*end = lexer_comment(str, type)) != str
+           || (*end = lexer_variables(str, type)) != str);
 
     return res;
 }

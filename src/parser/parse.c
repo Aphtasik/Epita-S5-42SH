@@ -19,7 +19,7 @@ struct ast *parse(struct lexer *lexer)
     struct ast_root *a_root = init_ast_root();
     struct token *tok = lexer_peek(lexer);
 
-    while (tok->type != TOKEN_EOF)
+    while ((tok = lexer_peek(lexer))->type != TOKEN_EOF)
     {
         // alloc a new children to thee root node
         a_root->children = realloc(
@@ -40,15 +40,15 @@ struct ast *parse(struct lexer *lexer)
     return (struct ast *)a_root;
 }
 
-int main(void)
-{
-    char *test = strdup("if true; then false; fi");
-
-    struct lexer *lexer = lexer_new(test);
-    struct ast *ast = parse(lexer);
-    ast_free(ast);
-    lexer_free(lexer);
-    free(test);
-    return 0;
-}
+/** int main(void) */
+/** { */
+/**     char *test = strdup("if true; then\n\techo false\nfi"); */
+/**  */
+/**     struct lexer *lexer = lexer_new(test); */
+/**     struct ast *ast = parse(lexer); */
+/**     ast_free(ast); */
+/**     lexer_free(lexer); */
+/**     free(test); */
+/**     return 0; */
+/** } */
 
