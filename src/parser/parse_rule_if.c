@@ -86,18 +86,12 @@ enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res,
         // fill the command node, error if no command
         struct ast_cmd *cmd = init_ast_cmd();
 
-        // Alloc space for child and link cmd
-        *res = realloc(*res, sizeof(struct ast *) * (*len + 1));
-        *res[*len] = (struct ast *)cmd;
-        
         // Get cmds
         p_stat = parse_fill_cmd(lexer, cmd);
         push_arr(res, len, (struct ast *)cmd);
         // no need to call handle_error cuz handled in parse_rule_if
         if (p_stat != PARSER_OK)
             return p_stat;
-
-        (*len)++;
 
         tok = lexer_peek(lexer);
     }
