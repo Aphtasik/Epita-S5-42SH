@@ -178,4 +178,3 @@ enum parser_status parse_rule_if(struct lexer *lexer, struct ast **res)
     token_free(tok);
     return PARSER_OK;
 }
-
