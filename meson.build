@@ -10,7 +10,7 @@ project(
 
         # these options would not be suitable in a
         # production configuration, but development easier
-        # 'b_sanitize=address',
+        'b_sanitize=address',
         'buildtype=debug',
         'werror=true',
     ],
