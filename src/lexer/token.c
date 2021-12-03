@@ -12,7 +12,7 @@ static struct token token_pairs[] = {
 
 struct token *token_new(enum token_type type)
 {
-    struct token *new = zalloc(sizeof(struct token));
+    struct token *new = malloc(sizeof(struct token));
     new->type = type;
     new->value = NULL;
     return new;

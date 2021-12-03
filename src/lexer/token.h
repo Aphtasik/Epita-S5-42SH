@@ -4,15 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "../utils/alloc.h"
-
-/** while
- * do
- * done
- * for
- * case
- * esac*/
-
 enum token_type
 {
     TOKEN_IF = 1,
