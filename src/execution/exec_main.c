@@ -1,17 +1,17 @@
+#include <stdio.h>
+
 #include "../parser/parse.h"
 #include "exec.h"
-
-#include <stdio.h>
 
 int main(void)
 {
     char *test = strdup("if true; then echo false fi");
-    //parsing
+    // parsing
     struct lexer *lexer = lexer_new(test);
     struct ast *ast = parse(lexer);
-    //execution
+    // execution
     eval_ast(ast);
-    //free
+    // free
     ast_free(ast);
     lexer_free(lexer);
     free(test);

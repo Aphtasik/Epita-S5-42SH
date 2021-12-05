@@ -1,8 +1,8 @@
-#include "builtins.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "builtins.h"
 
 void print_it(char *str, int e)
 {
