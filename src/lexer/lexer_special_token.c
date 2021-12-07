@@ -44,12 +44,37 @@ static char *lexer_get_separator(char *str, enum token_type *type)
         return (str + 2);
     }
 
+    if (*str == '&' && *(str + 1) == '&')
+    {
+        *type = TOKEN_AND;
+        return (str + 2);
+    }
+
+    if (*str == '|' && *(str + 1) == '|')
+    {
+        *type = TOKEN_OR;
+        return (str + 2);
+    }
+
     if (*str == '\n' || *str == ';' || *str == ' ' || *str == '\t'
-        || *str == '<' || *str == '>')
+        || *str == '<' || *str == '>' || *str == '!' || *str == '|'
+        || *str == '&')
     {
         char c = *str;
         switch (c)
         {
+        case '&':
+            *type = TOKEN_AMPERS;
+            break;
+            ;
+        case '!':
+            *type = TOKEN_NOT;
+            break;
+            ;
+        case '|':
+            *type = TOKEN_PIPE;
+            break;
+            ;
         case ';':
             *type = TOKEN_SEMICOL;
             break;
