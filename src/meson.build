@@ -1,4 +1,3 @@
-subdir('utils')
 subdir('lexer')
 subdir('ast')
 subdir('parser')
