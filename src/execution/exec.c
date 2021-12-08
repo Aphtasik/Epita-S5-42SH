@@ -26,7 +26,7 @@ struct builtins_fun builtins[] = {
 
 int is_builtin(char *cmd)
 {
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 3; i++)
     {
         if (!strcmp(cmd, builtins[i].name))
             return 1;
@@ -34,7 +34,7 @@ int is_builtin(char *cmd)
     return 0;
 }
 
-int exec_fork(char **cmd, size_t nbargs)
+int exec_fork(char **cmd)
 {
     pid_t pid = fork();
     if (pid == -1)
@@ -46,11 +46,7 @@ int exec_fork(char **cmd, size_t nbargs)
     if (!pid)
     {
         // children
-        char **format = malloc(sizeof(char *) * nbargs + 1);
-        format[0] = NULL;
-        for (size_t i = 0; i < nbargs; i++)
-            format[i + 1] = cmd[i];
-        execvp(format[1], format);
+        execvp(cmd[0], cmd);
         if (errno == 127)
             warnx("%s: command not found\n", cmd[0]);
         return errno;
@@ -90,7 +86,7 @@ void exec_rule_if(struct ast *ast)
     {
         // NULL else case handled by the nb_conditions equal to 0
         for (size_t i = 0; i < a_if->nb_on_false; i++)
-            eval_ast(a_if->conditions[i]);
+            eval_ast(a_if->on_false[i]);
     }
 }
 
@@ -117,8 +113,7 @@ int eval_ast(struct ast *ast)
         }
         else
         {
-            ret = exec_fork(((struct ast_cmd *)ast)->args,
-                            ((struct ast_cmd *)ast)->nb_args);
+            ret = exec_fork(((struct ast_cmd *)ast)->args);
             if (ret != 0)
                 warnx("command %s exited with error code %d\n",
                       ((struct ast_cmd *)ast)->args[0], ret);
@@ -127,8 +122,8 @@ int eval_ast(struct ast *ast)
         break;
     case AST_ROOT:
         for (size_t i = 0; i < ((struct ast_root *)ast)->nb_children; i++)
-            eval_ast(((struct ast_root *)ast)->children[i]);
-        break;
+            ret = eval_ast(((struct ast_root *)ast)->children[i]);
+        return ret;
     }
     return 0;
 }

@@ -5,7 +5,7 @@
 
 int main(void)
 {
-    char *test = strdup("if true; then echo false fi");
+    char *test = strdup("if false; then echo first \nelse echo second \nfi");
     // parsing
     struct lexer *lexer = lexer_new(test);
     struct ast *ast = parse(lexer);

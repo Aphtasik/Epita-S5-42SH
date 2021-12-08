@@ -84,8 +84,12 @@ void ast_free(struct ast *ast)
         for (size_t i = 0; i < a_if->nb_on_true; i++)
             ast_free(a_if->on_true[i]);
         free(a_if->on_true);
-        for (size_t i = 0; i < a_if->nb_on_false; i++)
-            ast_free(a_if->on_false[i]);
+        if (a_if->nb_on_false)
+        {
+            for (size_t i = 0; i < a_if->nb_on_false; i++)
+                ast_free(a_if->on_false[i]);
+            free(a_if->on_false);
+        }
     }
     else
     {
