@@ -47,9 +47,14 @@ void print_it(char *str, int e)
 
 int echo_it(char **args, size_t len)
 {
+    if (len == 1)
+    {
+        printf("%c", '\n');
+        return 0;
+    }
     int e = 0;
     int n = 0;
-    size_t i = 0;
+    size_t i = 1;
     if (!strcmp(args[i], "-e"))
     {
         e = 1;
@@ -60,7 +65,7 @@ int echo_it(char **args, size_t len)
         n = 1;
         i++;
     }
-    if (len == 1 && (e || n))
+    if (len == 2 && (e || n))
     {
         if (!n)
             printf("%c", '\n');
@@ -69,6 +74,8 @@ int echo_it(char **args, size_t len)
     while (i < len)
     {
         print_it(args[i], e);
+        if (i != len - 1)
+            printf("%c", ' ');
         i++;
     }
     if (!n)
