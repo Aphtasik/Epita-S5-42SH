@@ -5,6 +5,11 @@
 #include <unistd.h>
 #include <utils/vec.h>
 
+#include "execution/exec.h"
+#include "parser/parse.h"
+#include "ast/ast.h"
+#include "lexer/lexer.h"
+
 /**
  * \brief Parse the command line arguments
  * \return A character stream
@@ -36,6 +41,31 @@ static struct cstream *parse_args(int argc, char *argv[])
     return NULL;
 }
 
+int exec_command(char *c)
+{
+    if (!c)
+        return 0;
+    if (*c == '\0')
+        return 0;
+
+    struct lexer *lex = lexer_new(c);
+    if (lex == NULL)
+        return 1;
+
+    struct ast *ast = parse(lex);
+        if (ast == NULL)
+            return 1;
+
+    int err;
+    if ((err = eval_ast(ast)) != 0)
+        return err;
+
+    lexer_free(lex);
+    ast_free(ast);
+
+    return 0;
+}
+
 /**
  * \brief Read and print lines on newlines until EOF
  * \return An error code
@@ -53,12 +83,15 @@ enum error read_print_loop(struct cstream *cs, struct vec *line)
 
         // If the end of file was reached, stop right there
         if (c == EOF)
+        {
+            exec_command(line->data); //TODO: leaks + err
             break;
+        }
 
         // If a newline was met, print the line
         if (c == '\n')
         {
-            printf(">> line data: %s\n", vec_cstring(line));
+            exec_command(line->data); //TODO: leaks + err
             vec_reset(line);
             continue;
         }

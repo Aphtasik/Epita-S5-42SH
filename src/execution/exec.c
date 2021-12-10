@@ -104,20 +104,12 @@ int eval_ast(struct ast *ast)
     case AST_CMD:
         if (is_builtin(((struct ast_cmd *)ast)->args[0]))
         {
-            ret = exec_builtins(((struct ast_cmd *)ast)->args,
+            return exec_builtins(((struct ast_cmd *)ast)->args,
                                 ((struct ast_cmd *)ast)->nb_args);
-            if (ret != 0)
-                warnx("command %s exited with error code %d\n",
-                      ((struct ast_cmd *)ast)->args[0], ret);
-            return ret;
         }
         else
         {
-            ret = exec_fork(((struct ast_cmd *)ast)->args);
-            if (ret != 0)
-                warnx("command %s exited with error code %d\n",
-                      ((struct ast_cmd *)ast)->args[0], ret);
-            return ret;
+            return exec_fork(((struct ast_cmd *)ast)->args);
         }
         break;
     case AST_ROOT:
