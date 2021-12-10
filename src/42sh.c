@@ -5,10 +5,10 @@
 #include <unistd.h>
 #include <utils/vec.h>
 
-#include "execution/exec.h"
-#include "parser/parse.h"
 #include "ast/ast.h"
+#include "execution/exec.h"
 #include "lexer/lexer.h"
+#include "parser/parse.h"
 
 /**
  * \brief Parse the command line arguments
@@ -53,8 +53,8 @@ int exec_command(char *c)
         return 1;
 
     struct ast *ast = parse(lex);
-        if (ast == NULL)
-            return 1;
+    if (ast == NULL)
+        return 1;
 
     int err;
     if ((err = eval_ast(ast)) != 0)
@@ -84,14 +84,14 @@ enum error read_print_loop(struct cstream *cs, struct vec *line)
         // If the end of file was reached, stop right there
         if (c == EOF)
         {
-            exec_command(line->data); //TODO: leaks + err
+            exec_command(line->data); // TODO: leaks + err
             break;
         }
 
         // If a newline was met, print the line
         if (c == '\n')
         {
-            exec_command(line->data); //TODO: leaks + err
+            exec_command(line->data); // TODO: leaks + err
             vec_reset(line);
             continue;
         }

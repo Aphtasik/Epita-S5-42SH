@@ -105,7 +105,7 @@ int eval_ast(struct ast *ast)
         if (is_builtin(((struct ast_cmd *)ast)->args[0]))
         {
             return exec_builtins(((struct ast_cmd *)ast)->args,
-                                ((struct ast_cmd *)ast)->nb_args);
+                                 ((struct ast_cmd *)ast)->nb_args);
         }
         else
         {
