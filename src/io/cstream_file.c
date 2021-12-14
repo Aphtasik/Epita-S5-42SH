@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <io/cstream.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <utils/alloc.h>
 
@@ -49,6 +50,7 @@ struct cstream *cstream_file_create(FILE *file, bool fclose_on_free)
 {
     struct cstream_file *cstream = zalloc(sizeof(*cstream));
     cstream->base.type = &cstream_file_type;
+    cstream->base.has_buffer = false;
     cstream->file = file;
     cstream->fclose_on_free = fclose_on_free;
     return &cstream->base;
