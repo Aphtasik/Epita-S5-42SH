@@ -50,21 +50,43 @@ int exec_command(struct vec *line)
     input[i] = '\0';
 
     if (!input)
+    {
+        free(input);
         return 0;
-    if (*input == '\0')
-        return 0;
+    }
 
+    if (*input == '\0')
+    {
+        free(input);
+        return 0;
+    }
+
+    // Init lexer
     struct lexer *lex = lexer_new(input);
     if (lex == NULL)
+    {
+        free(input);
         return 1;
+    }
 
+    // Init ast
     struct ast *ast = parse(lex);
     if (ast == NULL)
+    {
+        lexer_free(lex);
+        free(input);
         return 1;
+    }
 
+    // Exec
     int err;
     if ((err = eval_ast(ast)) != 0)
+    {
+        free(input);
+        lexer_free(lex);
+        ast_free(ast);
         return err;
+    }
 
     lexer_free(lex);
     ast_free(ast);
