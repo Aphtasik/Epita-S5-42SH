@@ -7,7 +7,7 @@ static struct token token_pairs[] = {
     { TOKEN_PIPE, "|" },      { TOKEN_BACKN, "\n" },  { TOKEN_EOF, "\0" },
     { TOKEN_WHILE, "while" }, { TOKEN_DO, "do" },     { TOKEN_AND, "&&" },
     { TOKEN_OR, "||" },       { TOKEN_NOT, "!" },     { TOKEN_AMPERS, "&" },
-    { TOKEN_DONE, "done" },   { TOKEN_FOR, "for" },   { TOKEN_FOR, "for" },
+    { TOKEN_DONE, "done" },   { TOKEN_FOR, "for" },   { TOKEN_UNTIL, "until" },
     { TOKEN_CASE, "case" },   { TOKEN_ESAC, "esac" }, { TOKEN_UNKNOWN, NULL },
 };
 
