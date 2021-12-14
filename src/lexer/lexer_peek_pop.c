@@ -1,5 +1,6 @@
-#include "lexer.h"
 #include <stdio.h>
+
+#include "lexer.h"
 
 // return curr token
 struct token *lexer_peek(struct lexer *lexer)
