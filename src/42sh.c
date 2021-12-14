@@ -41,14 +41,20 @@ static struct cstream *parse_args(int argc, char *argv[])
     return NULL;
 }
 
-int exec_command(char *c)
+int exec_command(struct vec *line)
 {
-    if (!c)
+    char *input = calloc(line->size + 1, sizeof(char));
+    size_t i = 0;
+    for (i = 0; i < line->size; i++)
+        input[i] = line->data[i];
+    input[i] = '\0';
+
+    if (!input)
         return 0;
-    if (*c == '\0')
+    if (*input == '\0')
         return 0;
 
-    struct lexer *lex = lexer_new(c);
+    struct lexer *lex = lexer_new(input);
     if (lex == NULL)
         return 1;
 
@@ -62,6 +68,7 @@ int exec_command(char *c)
 
     lexer_free(lex);
     ast_free(ast);
+    free(input);
 
     return 0;
 }
@@ -84,14 +91,14 @@ enum error read_print_loop(struct cstream *cs, struct vec *line)
         // If the end of file was reached, stop right there
         if (c == EOF)
         {
-            exec_command(line->data); // TODO: leaks + err
+            exec_command(line); // TODO: leaks + err
             break;
         }
 
         // If a newline was met, print the line
         if (c == '\n')
         {
-            exec_command(line->data); // TODO: leaks + err
+            exec_command(line); // TODO: leaks + err
             vec_reset(line);
             continue;
         }
