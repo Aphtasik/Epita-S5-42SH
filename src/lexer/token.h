@@ -12,6 +12,7 @@ enum token_type
     TOKEN_ELSE,
     TOKEN_FI,
     TOKEN_WHILE,
+    TOKEN_UNTIL,
     TOKEN_DO,
     TOKEN_DONE,
     TOKEN_FOR,

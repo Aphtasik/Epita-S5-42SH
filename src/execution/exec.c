@@ -39,7 +39,7 @@ int exec_fork(char **cmd)
     pid_t pid = fork();
     if (pid == -1)
     {
-        warnx("fork error\n");
+        printf("fork error\n");
         // operation canceled error code
         exit(ECANCELED);
     }
@@ -76,7 +76,7 @@ int exec_builtins(char **cmd, size_t nbargs)
             return builtins[i].fun(cmd, nbargs);
     }
     // maybe useless because called only if is_builtin is true
-    warnx("%s: command not found\n", cmd[0]);
+    printf("%s: command not found\n", cmd[0]);
     return 127;
 }
 
@@ -101,6 +101,44 @@ void exec_rule_if(struct ast *ast)
     }
 }
 
+void exec_rule_while(struct ast *ast)
+{
+    struct ast_while *a_while = (struct ast_while *)ast;
+    int ret = 0;
+    for (size_t i = 0; i < a_while->nb_conditions; i++)
+        ret = eval_ast(a_while->conditions[i]);
+    // while last condition commmand return correctly, execute do clause
+    while (!ret)
+    {
+        // execute body
+        for (size_t i = 0; i < a_while->nb_body; i++)
+            eval_ast(a_while->body[i]);
+
+        // re execute all conditions to update ret
+        for (size_t i = 0; i < a_while->nb_conditions; i++)
+            ret = eval_ast(a_while->conditions[i]);
+    }
+}
+
+void exec_rule_until(struct ast *ast)
+{
+    struct ast_until *a_until = (struct ast_until *)ast;
+    int ret = 0;
+    for (size_t i = 0; i < a_until->nb_conditions; i++)
+        ret = eval_ast(a_until->conditions[i]);
+    // while last condition commmand return incorrectly, execute do clause
+    while (ret)
+    {
+        // execute body
+        for (size_t i = 0; i < a_until->nb_body; i++)
+            eval_ast(a_until->body[i]);
+
+        // re execute all conditions to update ret
+        for (size_t i = 0; i < a_until->nb_conditions; i++)
+            ret = eval_ast(a_until->conditions[i]);
+    }
+}
+
 int eval_ast(struct ast *ast)
 {
     // if the parser exited with an error
@@ -111,6 +149,12 @@ int eval_ast(struct ast *ast)
     {
     case AST_IF:
         exec_rule_if(ast);
+        break;
+    case AST_WHILE:
+        exec_rule_while(ast);
+        break;
+    case AST_UNTIL:
+        exec_rule_until(ast);
         break;
     case AST_CMD:
         if (is_builtin(((struct ast_cmd *)ast)->args[0]))

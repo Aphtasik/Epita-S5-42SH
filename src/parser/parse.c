@@ -5,11 +5,11 @@ enum parser_status handle_parse_error(enum parser_status status,
                                       struct ast **res)
 {
     if (status == PARSER_UNEXPECTED_TOKEN)
-        warnx("unexpected token");
+        printf("unexpected token\n");
     else if (status == PARSER_NO_COMMAND)
-        warnx("no command found");
+        printf("no command found\n");
     else if (status == PARSER_MISSING_TOKEN)
-        warnx("missing token");
+        printf("missing token\n");
     ast_free(*res);
     *res = NULL;
     return status;
@@ -20,6 +20,12 @@ enum parser_status parse_all(struct lexer *lexer, struct ast **res)
     enum parser_status p_stat;
     // parse if rule, must return ok if not interrested
     if ((p_stat = parse_rule_if(lexer, res)) != PARSER_OK)
+        return p_stat;
+    // parse every while rule
+    if ((p_stat = parse_rule_while(lexer, res)) != PARSER_OK)
+        return p_stat;
+    // parse every rule until
+    if ((p_stat = parse_rule_until(lexer, res)) != PARSER_OK)
         return p_stat;
     // parse every word found
     if ((p_stat = parse_cmd(lexer, res)) != PARSER_OK)
