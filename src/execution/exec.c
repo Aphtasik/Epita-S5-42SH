@@ -26,7 +26,7 @@ struct builtins_fun builtins[] = {
 
 int is_builtin(char *cmd)
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < NB_BUILTINS; i++)
     {
         if (!strcmp(cmd, builtins[i].name))
             return 1;
@@ -39,21 +39,32 @@ int exec_fork(char **cmd)
     pid_t pid = fork();
     if (pid == -1)
     {
-        warnx("fork error");
+        warnx("fork error\n");
         // operation canceled error code
-        return ECANCELED;
+        exit(ECANCELED);
     }
     if (!pid)
     {
         // children
         execvp(cmd[0], cmd);
-        if (errno == 127)
-            warnx("%s: command not found\n", cmd[0]);
-        return errno;
+        exit(errno);
     }
     // in parent
     int status;
-    waitpid(pid, &status, 0);
+    int ret = waitpid(pid, &status, 0);
+    if (ret == -1)
+        printf("waitpid error\n");
+    ret = WEXITSTATUS(status);
+    if (ret == 2)
+    {
+        printf("%s: command not found\n", cmd[0]);
+        return 127;
+    }
+    else if (ret > 0)
+    {
+        printf("command return with exit code %d\n", ret);
+        return ret;
+    }
     return 0;
 }
 
