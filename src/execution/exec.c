@@ -34,7 +34,7 @@ int is_builtin(char *cmd)
     return 0;
 }
 
-int exec_fork(char **cmd)
+int exec_fork(char **cmd, size_t nb_args)
 {
     pid_t pid = fork();
     if (pid == -1)
@@ -46,6 +46,8 @@ int exec_fork(char **cmd)
     if (!pid)
     {
         // children
+        cmd = realloc(cmd, (nb_args + 1) * sizeof(char *));
+        cmd[nb_args] = NULL;
         execvp(cmd[0], cmd);
         exit(errno);
     }
@@ -164,7 +166,8 @@ int eval_ast(struct ast *ast)
         }
         else
         {
-            return exec_fork(((struct ast_cmd *)ast)->args);
+            return exec_fork(((struct ast_cmd *)ast)->args,
+                             ((struct ast_cmd *)ast)->nb_args);
         }
         break;
     case AST_ROOT:

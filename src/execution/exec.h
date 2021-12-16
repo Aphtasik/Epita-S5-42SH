@@ -18,7 +18,7 @@ struct builtins_fun
 };
 
 int is_builtin(char *cmd);
-int exec_fork(char **cmd);
+int exec_fork(char **cmd, size_t nb_args);
 int exec_builtins(char **cmd, size_t nbargs);
 
 int eval_ast(struct ast *ast);
