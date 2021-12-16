@@ -39,7 +39,7 @@ enum parser_status parse_compound_list(struct lexer *lexer, struct ast ***res,
         p_stat = parse_fill_cmd(lexer, cmd);
         push_arr(res, len, (struct ast *)cmd);
         // no need to call handle_error cuz handled in parse_rule_if
-        if (p_stat != PARSER_OK)
+        if (p_stat != PARSER_OK && p_stat != PARSER_FINISHED)
             return p_stat;
 
         tok = lexer_peek(lexer);

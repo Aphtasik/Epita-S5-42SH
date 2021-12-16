@@ -79,16 +79,6 @@ int exec_command(struct vec *line)
         return 1;
     }
 
-    // Exec
-    int err;
-    if ((err = eval_ast(ast)) != 0)
-    {
-        free(input);
-        lexer_free(lex);
-        ast_free(ast);
-        return err;
-    }
-
     lexer_free(lex);
     ast_free(ast);
     free(input);

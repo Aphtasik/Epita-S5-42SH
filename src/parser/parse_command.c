@@ -90,7 +90,7 @@ enum parser_status parse_fill_cmd(struct lexer *lexer, struct ast_cmd *cmd)
     if (i == 0)
         return PARSER_NO_COMMAND;
     // unrecognized token so just return ok
-    return PARSER_OK;
+    return PARSER_FINISHED;
 }
 
 // create a ast_cmd node and fill it if interrested
