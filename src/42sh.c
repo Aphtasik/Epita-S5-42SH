@@ -70,6 +70,7 @@ int exec_command(struct vec *line)
     }
 
     // Init ast
+    skip_newline(lex);
     struct ast *ast = parse(lex);
     if (ast == NULL)
     {
@@ -165,7 +166,6 @@ int main(int argc, char *argv[])
             goto err_loop;
         }
     }
-
 
     // Success
     rc = 0;
