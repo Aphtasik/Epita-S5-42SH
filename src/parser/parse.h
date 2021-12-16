@@ -4,8 +4,8 @@
 #include <err.h>
 
 #include "../ast/ast.h"
-#include "../lexer/lexer.h"
 #include "../execution/exec.h"
+#include "../lexer/lexer.h"
 
 enum parser_status
 {

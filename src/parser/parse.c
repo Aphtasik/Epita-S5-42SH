@@ -47,7 +47,7 @@ struct ast *parse(struct lexer *lexer)
         enum parser_status p_stat =
             parse_all(lexer, &a_root->children[a_root->nb_children++]);
         if (p_stat == PARSER_FINISHED)
-           eval_ast(a_root->children[a_root->nb_children - 1]); 
+            eval_ast(a_root->children[a_root->nb_children - 1]);
 
         token_free(lexer_pop(lexer));
         // handling error

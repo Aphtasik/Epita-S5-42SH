@@ -112,4 +112,3 @@ enum parser_status parse_cmd(struct lexer *lexer, struct ast **res)
 
     return p_stat;
 }
-
