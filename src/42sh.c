@@ -37,6 +37,12 @@ static struct cstream *parse_args(int argc, char *argv[])
         return cstream_file_create(fp, /* fclose_on_free */ true);
     }
 
+    if (argc >= 2 && (strcmp(argv[1], "-c") == 0))
+    {
+        return cstream_file_create(stdin, /* fclose_on_free */ false);
+        ;
+    }
+
     fprintf(stderr, "Usage: %s [COMMAND]\n", argv[0]);
     return NULL;
 }
@@ -140,6 +146,14 @@ int main(int argc, char *argv[])
     vec_init(&line);
 
     // Run the test loop
+    if (argc == 1)
+    {
+        if (read_print_loop(cs, &line, 0) != NO_ERROR)
+        {
+            rc = 1;
+            goto err_loop;
+        }
+    }
     if (argc == 2)
     {
         if (read_print_loop(cs, &line, 1) != NO_ERROR)
@@ -150,11 +164,34 @@ int main(int argc, char *argv[])
     }
     else
     {
-        if (read_print_loop(cs, &line, 0) != NO_ERROR)
+        size_t count = 0;
+        int i = 2;
+        int j = 0;
+        for (i = 2; i < argc; i++)
         {
-            rc = 1;
-            goto err_loop;
+            for (j = 0; argv[i][j] != '\0'; j++)
+                ;
+            count += j;
         }
+
+        char *input = malloc(count + 1 + argc);
+        input[0] = '\0';
+        for (i = 2; i < argc; i++)
+        {
+            input = strcat(input, argv[i]);
+            input = strcat(input, " ");
+        }
+
+        // Init lexer
+        struct lexer *lex = lexer_new(input);
+
+        // Init ast
+        skip_newline(lex);
+        struct ast *ast = parse(lex);
+
+        lexer_free(lex);
+        ast_free(ast);
+        free(input);
     }
 
     // Success

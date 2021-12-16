@@ -49,9 +49,16 @@ struct ast *parse(struct lexer *lexer)
         if (p_stat == PARSER_FINISHED)
             eval_ast(a_root->children[a_root->nb_children - 1]);
 
-        token_free(lexer_pop(lexer));
+        tok = lexer_pop(lexer);
+        if (tok->type == TOKEN_EOF)
+        {
+            token_free(tok);
+            break;
+        }
+        token_free(tok);
+
         // handling error
-        if (p_stat != PARSER_OK)
+        if (p_stat != PARSER_FINISHED && p_stat != PARSER_OK)
         {
             handle_parse_error(p_stat);
         }
