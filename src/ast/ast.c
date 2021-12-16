@@ -167,7 +167,6 @@ void ast_free(struct ast *ast)
             free(a_cmd->args[i]);
         free(a_cmd->args);
     }
-<<<<<<< HEAD
     else if (t == AST_NOT)
     {
         struct ast_not *a_not = (struct ast_not *)ast;
@@ -178,13 +177,6 @@ void ast_free(struct ast *ast)
         struct ast_word *a_word = (struct ast_word *)ast;
         free(a_word->value);
     }
-    else // ast_op
-    {
-        struct ast_op *a_op = (struct ast_op *)ast;
-        free(a_op->value);
-        ast_free(a_op->leftc);
-        ast_free(a_op->rightc);
-=======
     else if (t == AST_WHILE)
     {
         struct ast_while *a_while = (struct ast_while *)ast;
@@ -204,7 +196,13 @@ void ast_free(struct ast *ast)
         for (size_t i = 0; i < a_until->nb_body; i++)
             ast_free(a_until->body[i]);
         free(a_until->body);
->>>>>>> master
+    }
+    else // ast_op
+    {
+        struct ast_op *a_op = (struct ast_op *)ast;
+        free(a_op->value);
+        ast_free(a_op->leftc);
+        ast_free(a_op->rightc);
     }
     free(ast);
 }
