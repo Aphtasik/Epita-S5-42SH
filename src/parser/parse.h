@@ -4,6 +4,7 @@
 #include <err.h>
 
 #include "../ast/ast.h"
+#include "../execution/exec.h"
 #include "../lexer/lexer.h"
 
 enum parser_status
@@ -11,7 +12,8 @@ enum parser_status
     PARSER_OK,
     PARSER_UNEXPECTED_TOKEN,
     PARSER_NO_COMMAND,
-    PARSER_MISSING_TOKEN
+    PARSER_MISSING_TOKEN,
+    PARSER_FINISHED
 };
 
 // parse_compound_list.c
@@ -33,8 +35,8 @@ enum parser_status parse_fill_cmd(struct lexer *lexer, struct ast_cmd *cmd);
 enum parser_status parse_cmd(struct lexer *lexer, struct ast **res);
 
 // parse.c
-enum parser_status handle_parse_error(enum parser_status status,
-                                      struct ast **res);
+enum parser_status handle_parse_error(enum parser_status status);
+
 struct ast *parse(struct lexer *lexer);
 
 #endif

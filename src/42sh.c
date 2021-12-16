@@ -70,22 +70,13 @@ int exec_command(struct vec *line)
     }
 
     // Init ast
+    skip_newline(lex);
     struct ast *ast = parse(lex);
     if (ast == NULL)
     {
         lexer_free(lex);
         free(input);
         return 1;
-    }
-
-    // Exec
-    int err;
-    if ((err = eval_ast(ast)) != 0)
-    {
-        free(input);
-        lexer_free(lex);
-        ast_free(ast);
-        return err;
     }
 
     lexer_free(lex);
@@ -99,7 +90,7 @@ int exec_command(struct vec *line)
  * \brief Read and print lines on newlines until EOF
  * \return An error code
  */
-enum error read_print_loop(struct cstream *cs, struct vec *line)
+enum error read_print_loop(struct cstream *cs, struct vec *line, int is_file)
 {
     enum error err;
 
@@ -118,7 +109,7 @@ enum error read_print_loop(struct cstream *cs, struct vec *line)
         }
 
         // If a newline was met, print the line
-        if (c == '\n')
+        if (is_file == 0 && c == '\n')
         {
             exec_command(line); // TODO: leaks + err
             vec_reset(line);
@@ -149,10 +140,21 @@ int main(int argc, char *argv[])
     vec_init(&line);
 
     // Run the test loop
-    if (read_print_loop(cs, &line) != NO_ERROR)
+    if (argc == 2)
     {
-        rc = 1;
-        goto err_loop;
+        if (read_print_loop(cs, &line, 1) != NO_ERROR)
+        {
+            rc = 1;
+            goto err_loop;
+        }
+    }
+    else
+    {
+        if (read_print_loop(cs, &line, 0) != NO_ERROR)
+        {
+            rc = 1;
+            goto err_loop;
+        }
     }
 
     // Success

@@ -1,3 +1,4 @@
+
 #include <utils/vec.h>
 
 void vec_init(struct vec *vec)

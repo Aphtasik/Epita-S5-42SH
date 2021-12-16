@@ -175,6 +175,9 @@ int eval_ast(struct ast *ast)
         for (size_t i = 0; i < ((struct ast_root *)ast)->nb_children; i++)
             ret = eval_ast(((struct ast_root *)ast)->children[i]);
         return ret;
+    default:
+        puts("Not implemented");
+        break;
     }
     return 0;
 }
