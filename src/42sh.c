@@ -5,6 +5,11 @@
 #include <unistd.h>
 #include <utils/vec.h>
 
+#include "ast/ast.h"
+#include "execution/exec.h"
+#include "lexer/lexer.h"
+#include "parser/parse.h"
+
 /**
  * \brief Parse the command line arguments
  * \return A character stream
@@ -36,6 +41,60 @@ static struct cstream *parse_args(int argc, char *argv[])
     return NULL;
 }
 
+int exec_command(struct vec *line)
+{
+    char *input = calloc(line->size + 1, sizeof(char));
+    size_t i = 0;
+    for (i = 0; i < line->size; i++)
+        input[i] = line->data[i];
+    input[i] = '\0';
+
+    if (!input)
+    {
+        free(input);
+        return 0;
+    }
+
+    if (*input == '\0')
+    {
+        free(input);
+        return 0;
+    }
+
+    // Init lexer
+    struct lexer *lex = lexer_new(input);
+    if (lex == NULL)
+    {
+        free(input);
+        return 1;
+    }
+
+    // Init ast
+    struct ast *ast = parse(lex);
+    if (ast == NULL)
+    {
+        lexer_free(lex);
+        free(input);
+        return 1;
+    }
+
+    // Exec
+    int err;
+    if ((err = eval_ast(ast)) != 0)
+    {
+        free(input);
+        lexer_free(lex);
+        ast_free(ast);
+        return err;
+    }
+
+    lexer_free(lex);
+    ast_free(ast);
+    free(input);
+
+    return 0;
+}
+
 /**
  * \brief Read and print lines on newlines until EOF
  * \return An error code
@@ -53,12 +112,15 @@ enum error read_print_loop(struct cstream *cs, struct vec *line)
 
         // If the end of file was reached, stop right there
         if (c == EOF)
+        {
+            exec_command(line); // TODO: leaks + err
             break;
+        }
 
         // If a newline was met, print the line
         if (c == '\n')
         {
-            printf(">> line data: %s\n", vec_cstring(line));
+            exec_command(line); // TODO: leaks + err
             vec_reset(line);
             continue;
         }

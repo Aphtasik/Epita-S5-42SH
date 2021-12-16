@@ -28,6 +28,34 @@ struct ast_if *init_ast_if(void)
     return new;
 }
 
+struct ast_while *init_ast_while(void)
+{
+    struct ast_while *new = malloc(sizeof(struct ast_while));
+
+    new->nb_conditions = 0;
+    new->conditions = NULL;
+
+    new->nb_body = 0;
+    new->body = NULL;
+
+    new->base.type = AST_WHILE;
+    return new;
+}
+
+struct ast_until *init_ast_until(void)
+{
+    struct ast_until *new = malloc(sizeof(struct ast_until));
+
+    new->nb_conditions = 0;
+    new->conditions = NULL;
+
+    new->nb_body = 0;
+    new->body = NULL;
+
+    new->base.type = AST_UNTIL;
+    return new;
+}
+
 struct ast_cmd *init_ast_cmd(void)
 {
     struct ast_cmd *new = malloc(sizeof(struct ast_cmd));
@@ -83,6 +111,10 @@ struct ast *init_ast(enum ast_type t)
         return (struct ast *)init_ast_not();
     case AST_WORD:
         return (struct ast *)init_ast_word();
+    case AST_WHILE:
+        return (struct ast *)init_ast_while();
+    case AST_UNTIL:
+        return (struct ast *)init_ast_until();
     default:
         warnx("init_ast: unrecognized type of ast");
         return NULL;
@@ -135,6 +167,7 @@ void ast_free(struct ast *ast)
             free(a_cmd->args[i]);
         free(a_cmd->args);
     }
+<<<<<<< HEAD
     else if (t == AST_NOT)
     {
         struct ast_not *a_not = (struct ast_not *)ast;
@@ -151,6 +184,27 @@ void ast_free(struct ast *ast)
         free(a_op->value);
         ast_free(a_op->leftc);
         ast_free(a_op->rightc);
+=======
+    else if (t == AST_WHILE)
+    {
+        struct ast_while *a_while = (struct ast_while *)ast;
+        for (size_t i = 0; i < a_while->nb_conditions; i++)
+            ast_free(a_while->conditions[i]);
+        free(a_while->conditions);
+        for (size_t i = 0; i < a_while->nb_body; i++)
+            ast_free(a_while->body[i]);
+        free(a_while->body);
+    }
+    else if (t == AST_UNTIL)
+    {
+        struct ast_until *a_until = (struct ast_until *)ast;
+        for (size_t i = 0; i < a_until->nb_conditions; i++)
+            ast_free(a_until->conditions[i]);
+        free(a_until->conditions);
+        for (size_t i = 0; i < a_until->nb_body; i++)
+            ast_free(a_until->body[i]);
+        free(a_until->body);
+>>>>>>> master
     }
     free(ast);
 }

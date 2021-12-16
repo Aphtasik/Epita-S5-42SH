@@ -5,7 +5,7 @@ enum parser_status parse_else_clause(struct lexer *lexer, struct ast_if *a_if)
 {
     struct token *tok = lexer_peek(lexer);
 
-    if (tok->type != TOKEN_ELSE || tok->type != TOKEN_ELIF)
+    if (tok->type != TOKEN_ELSE && tok->type != TOKEN_ELIF)
         return PARSER_OK;
 
     enum parser_status p_stat;

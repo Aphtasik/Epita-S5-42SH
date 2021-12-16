@@ -15,6 +15,7 @@ enum token_type
     TOKEN_DO,
     TOKEN_DONE,
     TOKEN_FOR,
+    TOKEN_UNTIL,
     TOKEN_CASE,
     TOKEN_ESAC,
     TOKEN_SEMICOL,

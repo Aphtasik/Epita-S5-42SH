@@ -14,7 +14,9 @@ enum ast_type
     AST_AND,
     AST_OR,
     AST_NOT,
-    AST_WORD
+    AST_WORD,
+    AST_WHILE,
+    AST_UNTIL
 };
 
 struct ast
@@ -76,9 +78,33 @@ struct ast_not
 };
 
 // init
+struct ast_while
+{
+    struct ast base;
+
+    struct ast **conditions;
+    size_t nb_conditions;
+
+    struct ast **body;
+    size_t nb_body;
+};
+
+struct ast_until
+{
+    struct ast base;
+
+    struct ast **conditions;
+    size_t nb_conditions;
+
+    struct ast **body;
+    size_t nb_body;
+};
+
 struct ast_root *init_ast_root(void);
 struct ast_if *init_ast_if(void);
 struct ast_cmd *init_ast_cmd(void);
+struct ast_while *init_ast_while(void);
+struct ast_until *init_ast_until(void);
 struct ast *init_ast(enum ast_type t);
 struct ast_op *init_ast_op(enum ast_type type);
 struct ast_not *init_ast_not();

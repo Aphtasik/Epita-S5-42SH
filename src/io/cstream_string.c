@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <io/cstream.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <utils/alloc.h>
 #include <utils/attributes.h>
@@ -42,6 +43,7 @@ struct cstream *cstream_string_create(const char *str)
 {
     struct cstream_string *cstream = zalloc(sizeof(*cstream));
     cstream->base.type = &cstream_string_type;
+    cstream->base.has_buffer = false;
     cstream->str = str;
     return &cstream->base;
 }

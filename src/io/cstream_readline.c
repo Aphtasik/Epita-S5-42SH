@@ -1,4 +1,5 @@
 #include <io/cstream.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -94,6 +95,7 @@ struct cstream *cstream_readline_create()
 {
     struct cstream_readline *cstream = xmalloc(sizeof(*cstream));
     cstream->base.type = &cstream_readline_type;
+    cstream->base.has_buffer = false;
     cstream->current_line = NULL;
     cstream->line_position = 0;
     cstream->line_start = true;

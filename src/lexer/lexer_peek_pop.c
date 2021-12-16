@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "lexer.h"
 
 // return curr token
