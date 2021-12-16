@@ -1,3 +1,3 @@
 all_sources += files(
-    'echo.c',
+    'echo.c','exit.c'
 )

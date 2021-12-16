@@ -1,6 +1,6 @@
 #include "exec.h"
 
-#define NB_BUILTINS 3
+#define NB_BUILTINS 4
 
 int true_it(char **args, size_t nbargs)
 {
@@ -21,7 +21,8 @@ struct builtins_fun builtins[] = {
     //{"cd", (*cd)},
     { "echo", (*echo_it) },
     { "true", (*true_it) },
-    { "false", (*false_it) }
+    { "false", (*false_it) },
+    { "exit", (*exit_it) }
 };
 
 int is_builtin(char *cmd)

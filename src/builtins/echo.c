@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "builtins.h"
+
 void print_it(char *str, int e)
 {
     if (!str)
